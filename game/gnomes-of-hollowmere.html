@@ -1,10 +1,76 @@
 <title>Gnomes of Hollowmere</title>
-<meta name="game-version" content="15 (25 Oct 2026): swap relics when the satchel is full">
+<meta name="game-version" content="16 (25 Oct 2026): loading screen">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Loading screen: drawn before the 3D engine loads, animated with transforms only so it keeps moving while the game starts -->
+<style>
+#splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:radial-gradient(ellipse at 50% 42%,#2e1d4a 0%,#170f26 55%,#0b0812 100%);color:#efe2c4;font-family:"Alegreya Sans",system-ui,sans-serif;text-align:center;transition:opacity .7s ease,visibility 0s .7s;overflow:hidden}
+#splash.gone{opacity:0;visibility:hidden}
+#splash .sp-stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.2;animation:spTw 2.4s ease-in-out infinite}
+@keyframes spTw{50%{opacity:.9;transform:scale(1.5)}}
+#splash .sp-stage{position:relative;width:220px;height:230px;transform:scale(var(--spk,1));transform-origin:50% 100%;margin-top:calc((var(--spk,1) - 1)*230px)}
+@media (min-height:700px) and (min-width:700px){#splash{--spk:1.35}}
+#splash .sp-beam{position:absolute;left:50%;bottom:22px;width:130px;height:240px;margin-left:-65px;background:linear-gradient(to top,rgba(255,214,130,.55),rgba(255,214,130,0));filter:blur(8px);border-radius:50% 50% 0 0;animation:spBeam 1.8s ease-in-out infinite}
+@keyframes spBeam{50%{opacity:.55;transform:scaleX(.9)}}
+#splash .sp-shadow{position:absolute;left:50%;bottom:14px;width:110px;height:18px;margin-left:-55px;border-radius:50%;background:radial-gradient(rgba(255,200,110,.6),rgba(255,200,110,0) 70%);animation:spShadow .9s ease-in-out infinite}
+@keyframes spShadow{0%,100%{transform:scale(1.1)}50%{transform:scale(.7);opacity:.6}}
+#splash .sp-gnome{position:absolute;left:50%;bottom:20px;width:120px;margin-left:-60px;transform-origin:50% 100%;animation:spHop .9s cubic-bezier(.3,.1,.4,1) infinite}
+@keyframes spHop{0%,100%{transform:translateY(0) scale(1.08,.92)}15%{transform:translateY(-8px) scale(.95,1.06)}50%{transform:translateY(-40px) scale(1,1)}85%{transform:translateY(-6px) scale(.98,1.03)}}
+#splash .sp-flip{position:absolute;left:50%;bottom:20px;width:120px;height:150px;margin-left:-60px;transform-origin:50% 30%;animation:spFlip 2.7s linear infinite}
+@keyframes spFlip{0%,72%{transform:rotate(0)}76%{transform:rotate(-40deg)}90%{transform:rotate(-340deg)}94%,100%{transform:rotate(-360deg)}}
+#splash .sp-flip .sp-gnome{left:0;bottom:0;margin-left:0}
+#splash .sp-hat{transform-box:fill-box;transform-origin:50% 100%;animation:spHat .9s ease-in-out infinite}
+@keyframes spHat{0%,100%{transform:rotate(9deg)}50%{transform:rotate(-14deg)}}
+#splash .sp-eye{transform-box:fill-box;transform-origin:50% 50%;animation:spBlink 3.2s infinite}
+@keyframes spBlink{0%,90%,100%{transform:scaleY(1)}93%{transform:scaleY(.1)}}
+#splash .sp-die{position:absolute;left:50%;bottom:150px;width:34px;height:34px;margin-left:-17px;animation:spDie .9s ease-in-out infinite}
+#splash .sp-die svg{width:100%;height:100%;animation:spSpin 1.8s linear infinite}
+@keyframes spDie{0%,100%{transform:translateY(-58px)}50%{transform:translateY(-14px)}}
+@keyframes spSpin{to{transform:rotate(360deg)}}
+#splash h1{margin:14px 0 0;font-family:"IM Fell English SC",Georgia,serif;font-weight:400;font-size:clamp(30px,7vw,52px);line-height:1;color:#e8c77e;text-shadow:0 0 24px rgba(232,199,126,.35)}
+#splash .sp-sub{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#a99fc0}
+#splash .sp-sub{padding:0 24px;text-wrap:balance}
+@media (max-width:480px){#splash .sp-sub{letter-spacing:.14em;font-size:10.5px}}
+#splash .sp-bar{margin-top:18px;width:min(240px,60vw);height:4px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+#splash .sp-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#c99541,#f4dc98);transform-origin:0 50%;transform:scaleX(.08);transition:transform .5s ease}
+#splash .sp-msg{margin-top:10px;min-height:20px;font-size:14px;color:#cfc3e6;font-style:italic}
+@media (prefers-reduced-motion:reduce){#splash *{animation:none!important}}
+</style>
+<div id="splash" role="status" aria-live="polite">
+  <div class="sp-stars" aria-hidden="true"><i style="left:12%;top:18%"></i><i style="left:82%;top:14%;animation-delay:.6s"></i><i style="left:70%;top:72%;animation-delay:1.2s"></i><i style="left:20%;top:76%;animation-delay:1.8s"></i><i style="left:46%;top:9%;animation-delay:.9s"></i><i style="left:90%;top:46%;animation-delay:.3s"></i><i style="left:6%;top:48%;animation-delay:1.5s"></i></div>
+  <div class="sp-stage" aria-hidden="true">
+    <div class="sp-beam"></div><div class="sp-shadow"></div>
+    <div class="sp-die"><svg viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34" rx="8" fill="#f6eedc" stroke="#c99541" stroke-width="2.5"/><circle cx="12" cy="12" r="3.6" fill="#2c4fa8"/><circle cx="20" cy="20" r="3.6" fill="#b3202b"/><circle cx="28" cy="28" r="3.6" fill="#2c4fa8"/></svg></div>
+    <div class="sp-flip"><svg class="sp-gnome" viewBox="0 0 240 300">
+      <path d="M58 296 C54 230 78 196 120 196 C162 196 186 230 182 296 Z" fill="#3d68bd"/>
+      <rect x="60" y="250" width="120" height="16" rx="6" fill="#5a3418"/><rect x="110" y="248" width="20" height="20" rx="3" fill="#e2b85e"/>
+      <path d="M64 150 C58 214 92 262 120 272 C148 262 182 214 176 150 C160 172 80 172 64 150 Z" fill="#fbf8ff"/>
+      <ellipse cx="120" cy="142" rx="54" ry="44" fill="#f7c9ab"/>
+      <ellipse class="sp-eye" cx="100" cy="134" rx="6" ry="7.5" fill="#2a1a10"/><ellipse class="sp-eye" cx="140" cy="134" rx="6" ry="7.5" fill="#2a1a10"/>
+      <ellipse cx="86" cy="156" rx="10" ry="6" fill="#ff8a8a" opacity=".5"/><ellipse cx="154" cy="156" rx="10" ry="6" fill="#ff8a8a" opacity=".5"/>
+      <ellipse cx="120" cy="156" rx="15" ry="13" fill="#f0a27e"/>
+      <path d="M120 168 C100 160 82 168 72 178 C92 182 108 178 120 172 C132 178 148 182 168 178 C158 168 140 160 120 168Z" fill="#fff"/>
+      <g class="sp-hat"><path d="M62 112 C74 64 104 22 168 0 C150 40 168 76 178 112 Z" fill="#d23a2e"/><path d="M168 0 C150 40 168 76 178 112 L156 112 C150 72 142 34 168 0Z" fill="#000" opacity=".15"/>
+        <rect x="54" y="102" width="132" height="22" rx="11" fill="#e2b85e"/><circle cx="120" cy="113" r="7" fill="#3fb0ff" stroke="#fff3c4" stroke-width="2.5"/></g>
+    </svg></div>
+  </div>
+  <h1>Gnomes of Hollowmere</h1>
+  <div class="sp-sub">A board game of small heroes and large teeth</div>
+  <div class="sp-bar"><i id="spBar"></i></div>
+  <div class="sp-msg" id="spMsg">Polishing the dice…</div>
+</div>
+<script>
+(function(){var t0=Date.now(),msgs=['Polishing the dice…','Waking the dragon (carefully)…','Counting mushrooms…','Untangling the vine ladders…','Bribing the goblins…','Teaching the troll to share…','Lighting the summit hearth…','Feeding the hydra (all its heads)…'],i=0,
+  m=document.getElementById('spMsg'),tm=setInterval(function(){i=(i+1)%msgs.length;if(m)m.textContent=msgs[i];},1500);
+  window.__sp=function(p){var b=document.getElementById('spBar');if(b)b.style.transform='scaleX('+Math.max(.08,Math.min(1,p/100))+')';};
+  window.__spDone=function(){window.__sp(100);var wait=Math.max(0,2300-(Date.now()-t0));setTimeout(function(){var s=document.getElementById('splash');if(!s)return;s.classList.add('gone');clearInterval(tm);setTimeout(function(){s.remove();if(window.__afterSplash)window.__afterSplash();},800);},wait);};
+  window.__sp(12);})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>window.__sp&&__sp(45)</script>
 <style>
 /* Layout: full-bleed WebGL realm; ink-and-gilt HUD pinned to the top and bottom edges, cutscene overlays above */
 :root{
@@ -352,7 +418,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 
 <div class="modal" id="forge">
   <form class="sheet" id="forgeForm" autocomplete="off">
-    <p class="eyebrow">A board game of small heroes and large teeth <span class="ver">Version 15</span></p>
+    <p class="eyebrow">A board game of small heroes and large teeth <span class="ver">Version 16</span></p>
     <h2>Gnomes of Hollowmere</h2>
     <p class="lede">Race your gnome from the Burrow to land exactly on the Summit Hearth, square 100, past vine ladders, monster lairs and relic crystals. <button type="button" class="linkbtn" id="forgeHow">New here? How to play</button></p>
     <div id="contBox" hidden style="margin-bottom:14px">
@@ -405,7 +471,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 <div class="modal" id="grim" hidden>
   <div class="sheet">
     <button class="btn x" id="grimClose" aria-label="Close grimoire">✕</button>
-    <p class="eyebrow">Field notes of the realm <span class="ver">Version 15</span></p>
+    <p class="eyebrow">Field notes of the realm <span class="ver">Version 16</span></p>
     <h2>Grimoire</h2>
     <p class="fine" style="margin:-2px 0 14px">New to the game? <button type="button" class="linkbtn" id="grimHow">Read how to play</button></p>
     <div class="gcols">
@@ -429,7 +495,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 <div class="modal" id="howto" hidden>
   <div class="sheet howsheet" role="dialog" aria-labelledby="howTitle">
     <button class="btn x" id="howClose" aria-label="Close how to play">✕</button>
-    <p class="eyebrow">For new adventurers <span class="ver">Version 15</span></p>
+    <p class="eyebrow">For new adventurers <span class="ver">Version 16</span></p>
     <h2 id="howTitle">How to play</h2>
     <p class="lede">Race your gnome from the Burrow on square 1 to the Summit Hearth on square 100. The first gnome to land <b>exactly</b> on 100 wins.</p>
     <div class="hgrid">
@@ -472,7 +538,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 
 <script>
 /* Startup guard: show a readable message on screen instead of failing silently (phones have no console). */
-(function(){function show(msg){var d=document.getElementById('bootErr');if(!d){d=document.createElement('div');d.id='bootErr';
+(function(){function show(msg){var sp=document.getElementById('splash');if(sp)sp.remove();var d=document.getElementById('bootErr');if(!d){d=document.createElement('div');d.id='bootErr';
   d.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:99999;padding:14px 16px;border-radius:12px;background:#2a1422;color:#ffe9c4;border:1px solid #c9a24a;font:15px/1.45 system-ui,sans-serif;box-shadow:0 8px 30px #0008';
   (document.body||document.documentElement).appendChild(d);}d.innerHTML='<b>The realm could not open.</b><br>'+msg;}
  window.__bootShow=show;
@@ -2272,8 +2338,10 @@ G.dk='medium';G.diff=DIFFS.medium;setDie('d12');
 function showDiffInfo(){const r=document.querySelector('input[name=diff]:checked');$('diffInfo').textContent=DIFFS[r?r.value:'medium'].blurb.replace(/^[^.]*\.\s*/,'');}
 document.querySelectorAll('input[name=diff]').forEach(r=>r.addEventListener('change',showDiffInfo));showDiffInfo();
 openForge();window.__booted=true;
-{let seen=null;try{seen=localStorage.getItem('hollowmere-howto');}catch(e){}if(!seen)setTimeout(openHow,600);}
+{let seen=null;try{seen=localStorage.getItem('hollowmere-howto');}catch(e){}if(!seen){if(document.getElementById('splash'))window.__afterSplash=()=>setTimeout(openHow,250);else setTimeout(openHow,250);}}
 const fontsReady=document.fonts&&document.fonts.load?Promise.race([Promise.all([document.fonts.load('700 38px "Alegreya Sans"'),document.fonts.load('400 42px "IM Fell English SC"')]),wait(2500)]):Promise.resolve();
-fontsReady.catch(()=>{}).then(()=>{repaintDice();realm=generateRealm($('seed').value,'medium');buildRealm();realm.respawnQ=[];$('seedlabel').textContent=realm.seed;});
+window.__sp&&__sp(75);
+fontsReady.catch(()=>{}).then(()=>{repaintDice();realm=generateRealm($('seed').value,'medium');buildRealm();realm.respawnQ=[];$('seedlabel').textContent=realm.seed;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__spDone&&__spDone();}));});
 requestAnimationFrame(frame);
 </script>
