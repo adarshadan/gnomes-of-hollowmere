@@ -1,5 +1,5 @@
 <title>Gnomes of Hollowmere</title>
-<meta name="game-version" content="16 (25 Oct 2026): loading screen">
+<meta name="game-version" content="17 (25 Oct 2026): phone layout of the title screen">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -360,8 +360,25 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
   .hgrid,.hdiff,.swaplist{grid-template-columns:1fr}
   .fgrid{grid-template-columns:1fr}
   .dcard span{padding:9px 8px}.dcard b{font-size:18px}.dcard em{font-size:11.5px}
+
   .sheet{padding:20px 16px 16px}
   .tools .btn{padding:7px 9px;font-size:12px}
+}
+/* Phones: title screen difficulty choices become full-width rows, and the sheet is tightened so it fits with less scrolling */
+@media (max-width:560px){
+  .dcards{grid-template-columns:1fr;gap:6px}
+  .dcard span{display:grid;grid-template-columns:78px 1fr;column-gap:10px;row-gap:1px;align-items:center;padding:8px 12px}
+  .dcard b{grid-row:1/3;font-size:21px}
+  .dcard i{font-size:11px;letter-spacing:.07em}
+  .dcard em{font-size:12.5px;line-height:1.3}
+  #forge .eyebrow{font-size:10px;letter-spacing:.1em;line-height:1.7}
+  #forge .eyebrow .ver{white-space:nowrap;margin-left:0;display:inline-block;margin-top:3px}
+  #forge .sheet h2{font-size:clamp(28px,8.4vw,36px)}
+  #forge .lede{font-size:15px;line-height:1.45;margin-bottom:14px}
+  #forge .field,#forge fieldset.field{margin-bottom:11px}
+  #forge .fgrid .field{margin-bottom:10px}
+  #forge .seg span{padding:7px 11px}
+  #forge .cta{padding:11px 14px 12px}
 }
 @media (prefers-reduced-motion:reduce){.slot.usable,.pad.held svg{animation:none}#reveal.on{animation-duration:.01s}}
 </style>
@@ -418,7 +435,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 
 <div class="modal" id="forge">
   <form class="sheet" id="forgeForm" autocomplete="off">
-    <p class="eyebrow">A board game of small heroes and large teeth <span class="ver">Version 16</span></p>
+    <p class="eyebrow">A board game of small heroes and large teeth <span class="ver">Version 17</span></p>
     <h2>Gnomes of Hollowmere</h2>
     <p class="lede">Race your gnome from the Burrow to land exactly on the Summit Hearth, square 100, past vine ladders, monster lairs and relic crystals. <button type="button" class="linkbtn" id="forgeHow">New here? How to play</button></p>
     <div id="contBox" hidden style="margin-bottom:14px">
@@ -464,14 +481,14 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
       </div>
     </div>
     <button class="cta" type="submit">Forge the realm</button>
-    <p class="fine">Same seed, same board. To roll, wiggle the mouse over the die, hold and shake it, press Space, or tap Roll dice. Games save after every turn.</p>
+    <p class="fine" id="forgeTip">Same seed, same board. To roll, wiggle the mouse over the die, hold and shake it, press Space, or tap Roll dice. Games save after every turn.</p>
   </form>
 </div>
 
 <div class="modal" id="grim" hidden>
   <div class="sheet">
     <button class="btn x" id="grimClose" aria-label="Close grimoire">✕</button>
-    <p class="eyebrow">Field notes of the realm <span class="ver">Version 16</span></p>
+    <p class="eyebrow">Field notes of the realm <span class="ver">Version 17</span></p>
     <h2>Grimoire</h2>
     <p class="fine" style="margin:-2px 0 14px">New to the game? <button type="button" class="linkbtn" id="grimHow">Read how to play</button></p>
     <div class="gcols">
@@ -495,7 +512,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 <div class="modal" id="howto" hidden>
   <div class="sheet howsheet" role="dialog" aria-labelledby="howTitle">
     <button class="btn x" id="howClose" aria-label="Close how to play">✕</button>
-    <p class="eyebrow">For new adventurers <span class="ver">Version 16</span></p>
+    <p class="eyebrow">For new adventurers <span class="ver">Version 17</span></p>
     <h2 id="howTitle">How to play</h2>
     <p class="lede">Race your gnome from the Burrow on square 1 to the Summit Hearth on square 100. The first gnome to land <b>exactly</b> on 100 wins.</p>
     <div class="hgrid">
@@ -2245,6 +2262,7 @@ function openForge(seed){
 function requestMotion(){try{if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function')DeviceMotionEvent.requestPermission().catch(()=>{});}catch(e){}}
 $('bNew').addEventListener('click',()=>{if(G.busy&&!G.over)return;$('win').hidden=true;openForge();});
 $('difflabel').addEventListener('click',()=>{if(G.busy&&!G.over)return;$('win').hidden=true;openForge(realm&&realm.seed);});
+if(window.matchMedia&&matchMedia('(pointer:coarse)').matches)$('forgeTip').textContent='Same seed, same board. To roll, tap Roll dice, press and wiggle the die, or shake your phone. Games save after every turn.';
 $('reseed').addEventListener('click',()=>{$('seed').value=randomSeed();});
 $('forgeForm').addEventListener('submit',e=>{e.preventDefault();AU.init();Bard.start();requestMotion();
   const seed=($('seed').value.trim()||randomSeed()).slice(0,40),count=+document.querySelector('input[name=count]:checked').value,mode=document.querySelector('input[name=mode]:checked').value,rounds=+document.querySelector('input[name=rounds]:checked').value;
