@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.6.9",
-    "@capacitor/core": "^7.6.9"
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/screen-orientation": "^7.0.4"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.6.9",

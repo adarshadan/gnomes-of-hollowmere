@@ -1,5 +1,5 @@
 <title>Gnomes of Hollowmere</title>
-<meta name="game-version" content="18 (25 Oct 2026): royal scroll home screen with music">
+<meta name="game-version" content="19 (25 Oct 2026): landscape option and phone-landscape layout">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -65,7 +65,7 @@
 (function(){var t0=Date.now(),msgs=['Polishing the dice…','Waking the dragon (carefully)…','Counting mushrooms…','Untangling the vine ladders…','Bribing the goblins…','Teaching the troll to share…','Lighting the summit hearth…','Feeding the hydra (all its heads)…'],i=0,
   m=document.getElementById('spMsg'),tm=setInterval(function(){i=(i+1)%msgs.length;if(m)m.textContent=msgs[i];},1500);
   window.__sp=function(p){var b=document.getElementById('spBar');if(b)b.style.transform='scaleX('+Math.max(.08,Math.min(1,p/100))+')';};
-  window.__spDone=function(){window.__sp(100);var wait=Math.max(0,2300-(Date.now()-t0));setTimeout(function(){var s=document.getElementById('splash');if(!s)return;s.classList.add('gone');clearInterval(tm);setTimeout(function(){s.remove();(window.__afterSplashQ||[]).forEach(function(f){try{f()}catch(e){}});window.__afterSplashQ=null;},800);},wait);};
+  window.__spDone=function(){window.__sp(100);var wait=Math.max(0,2300-(Date.now()-t0));setTimeout(function(){var s=document.getElementById('splash');if(!s)return;s.classList.add('gone');clearInterval(tm);window.__splashDone=true;(window.__afterSplashQ||[]).forEach(function(f){try{f()}catch(e){}});window.__afterSplashQ=null;setTimeout(function(){s.remove();},800);},wait);};
   window.__sp(12);})();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -138,8 +138,8 @@ body.lay-side #party{grid-row:2;align-self:end;grid-auto-columns:minmax(196px,1f
 body.lay-wide #hud{grid-template-columns:auto minmax(0,1fr) 312px}
 body.lay-wide #dicebox{justify-self:stretch;justify-content:center}
 body.lay-side #dicebox{grid-column:1;grid-row:3;justify-self:stretch;justify-content:center;width:300px;box-sizing:border-box}
-body.lay-side #chron,body.lay-stack #chron{position:fixed;z-index:25;right:max(12px,env(safe-area-inset-right,0px));top:50%;width:min(320px,86vw);height:min(62vh,460px);transform:translate(calc(100% + 30px),-50%);opacity:0;visibility:hidden;transition:transform .35s cubic-bezier(.2,.9,.3,1),opacity .3s,visibility 0s .35s}
-body.lay-side #chron,body.lay-stack #chron{background:linear-gradient(#251b30,#17111f);box-shadow:0 20px 60px rgba(0,0,0,.7)}
+body.lay-short #chron,body.lay-side #chron,body.lay-stack #chron{position:fixed;z-index:25;right:max(12px,env(safe-area-inset-right,0px));top:50%;width:min(320px,86vw);height:min(62vh,460px);transform:translate(calc(100% + 30px),-50%);opacity:0;visibility:hidden;transition:transform .35s cubic-bezier(.2,.9,.3,1),opacity .3s,visibility 0s .35s}
+body.lay-short #chron,body.lay-side #chron,body.lay-stack #chron{background:linear-gradient(#251b30,#17111f);box-shadow:0 20px 60px rgba(0,0,0,.7)}
 body.chron-open #chron{transform:translate(0,-50%);opacity:1;visibility:visible;transition:transform .35s cubic-bezier(.2,.9,.3,1),opacity .3s}
 body.lay-side #chronTab{display:flex;position:fixed;z-index:24;right:0;top:50%;transform:translateY(-50%);pointer-events:auto;cursor:pointer;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-right:0;border-radius:6px 0 0 6px;color:var(--gilt);font:400 15px var(--f-display);letter-spacing:.06em}
 #chronTab span{writing-mode:vertical-rl;transform:rotate(180deg)}
@@ -150,7 +150,62 @@ body.lay-stack #party{grid-column:1/-1;grid-row:3;align-self:end;grid-auto-flow:
 body.lay-stack #dicebox{grid-column:1/-1;grid-row:4;justify-self:stretch;justify-content:center}
 body.lay-stack.roomy #party{grid-column:1;grid-row:3/5}
 body.lay-stack.roomy #dicebox{grid-column:2;grid-row:3/5;align-self:end;flex-direction:column;gap:6px}
-body.lay-stack .ibtn{display:inline-block}
+body.lay-stack .ibtn,body.lay-short .ibtn{display:inline-block}
+/* Phone held sideways: title and gnome cards down the left, dice on the right, the board fills the middle */
+body.lay-short #hud{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;padding-top:max(8px,env(safe-area-inset-top,0px));padding-bottom:max(8px,env(safe-area-inset-bottom,0px))}
+body.lay-short .top{grid-column:1;grid-row:1;width:186px}
+body.lay-short .crest{padding:6px 9px 7px;flex:1}
+body.lay-short .crest h1{font-size:15px}
+body.lay-short .crest .realm{font-size:9px;letter-spacing:.08em}.lay-short .crest .realm b{font-size:11px}
+body.lay-short .ibtn{padding:4px 7px;font-size:13px}
+body.lay-short .tools{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:5;width:max-content;max-width:min(440px,calc(100vw - 32px));flex-wrap:wrap}
+body.lay-short.menu-open .tools{display:flex}
+body.lay-short #party{grid-column:1;grid-row:2/4;align-self:start;grid-auto-columns:186px;gap:6px}
+body.lay-short .gcard{display:grid;grid-template-columns:auto 1fr;column-gap:6px;padding:6px 8px 7px;position:relative}
+body.lay-short .ghead{grid-column:1/-1;padding-right:56px}
+body.lay-short .gname{font-size:14px}body.lay-short .gtag{display:none}
+body.lay-short .gmid{position:absolute;top:4px;right:8px;margin:0;gap:4px}
+body.lay-short .gmid .glab,body.lay-short .gmid .gtally{display:none}
+body.lay-short .gpos{font-size:19px}body.lay-short .gstat{font-size:9.5px;align-self:center}
+body.lay-short .ginv{margin-top:5px;gap:3px}
+body.lay-short .slot{width:23px;height:23px;font-size:12px}body.lay-short .slot .k{font-size:7px}
+body.lay-short .gnear{margin-top:5px;min-height:23px;justify-content:flex-end;gap:3px}
+body.lay-short .gnear .glab,body.lay-short .gnear .nclear{display:none}
+body.lay-short .threat{height:21px;padding:0 5px 0 3px;font-size:10.5px}body.lay-short .threat i{font-size:12px}
+body.lay-short #dicebox{grid-column:3;grid-row:2/4;align-self:end;flex-direction:column;gap:4px;padding:8px 10px;width:150px;box-sizing:border-box}
+body.lay-short .pad{width:auto;flex-direction:row;gap:8px}body.lay-short .pad svg{width:42px;height:42px}
+body.lay-short #rollbtn{font-size:17px;padding:8px 14px 9px}
+body.lay-short #rollstat,body.lay-short .lastcalc{font-size:11px;max-width:130px}
+body.lay-short .btn.mini{padding:4px 6px;font-size:10.5px}
+body.lay-short #banner .bt{font-size:20px;padding:6px 16px 7px}body.lay-short #banner .bs{font-size:12.5px}
+body.lay-short #reveal{width:min(70vw,440px)}
+body.lay-short .rv-calc b{font-size:42px}body.lay-short .rv-calc .op{font-size:26px;padding-top:6px}body.lay-short .rv-tag{font-size:19px}
+body.lay-short .rv-move .sq{font-size:14px}body.lay-short .rv-move .sq b{font-size:19px}
+body.lay-short #lairTag b{font-size:15px}
+/* The home scroll on a phone held sideways: two columns so it fits without scrolling */
+@media (max-height:540px) and (min-aspect-ratio:13/10){
+  #forge{padding-block:8px}
+  .scrollwrap{width:min(100%,820px)}
+  .sheet.home{max-height:calc(100dvh - 16px - 40px);padding:16px 20px 14px}
+  #forgeForm.home{display:grid;grid-template-columns:1.05fr 1fr;column-gap:22px;align-items:start}
+  #forge .hleft,#forge .hright{min-width:0}
+  #forge .htitle{font-size:clamp(19px,2.9vw,25px);padding-right:0;margin-bottom:8px!important;white-space:nowrap}
+  #forge .flourish{margin:-2px 0 8px}
+  #forge .hgnome{width:40px;height:50px;top:10px;right:auto;left:calc(52.5% - 64px)}
+  #forge .dcards{grid-template-columns:1fr;gap:5px}
+  #forge .dcard span{display:grid;grid-template-columns:70px 1fr;column-gap:8px;row-gap:0;align-items:center;padding:5px 10px}
+  #forge .dcard b{grid-row:1/3;font-size:18px}#forge .dcard i{font-size:10px}#forge .dcard em{font-size:11.5px;line-height:1.25}
+  #forge .field,#forge fieldset.field{margin-bottom:8px}
+  #forge #diffInfo{font-size:11.5px;margin:2px 0 0!important}
+  #forge .fgrid{grid-template-columns:auto auto;justify-content:space-between;column-gap:8px}
+  #forge .fgrid .fwide{grid-column:1/-1}
+  #forge .fgrid .seg{gap:4px;flex-wrap:nowrap}
+  #forge .seg span{padding:6px 9px;font-size:13.5px}
+  #forge #seed{padding:7px 10px;font-size:15px}
+  #forge .cta{padding:9px 12px 10px;font-size:19px;margin-top:2px}
+  #forge #contBox{margin-bottom:8px!important}#forge #contBox .cta{font-size:16px;padding:7px}
+  #splash .sp-stage{transform:scale(.72);margin-top:-64px}
+}
 body.lay-stack .tools{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:5;max-width:min(360px,100%);justify-content:flex-end}
 body.lay-stack.menu-open .tools{display:flex}
 body.lay-stack .top{justify-content:stretch}body.lay-stack .crest{flex:1}
@@ -194,7 +249,7 @@ body.lay-stack .top{justify-content:stretch}body.lay-stack .crest{flex:1}
 .ctitle::before{content:"\2766";margin-right:7px;font-size:14px;color:var(--gilt-hi);opacity:.8}
 .csub{flex:1;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:right}
 #chronClose{display:none;position:static;width:28px;height:28px;font-size:14px}
-body.lay-side #chronClose,body.lay-stack #chronClose{display:block}
+body.lay-short #chronClose,body.lay-side #chronClose,body.lay-stack #chronClose{display:block}
 #log{flex:1;min-height:0;overflow-y:auto;padding:8px 12px 12px 12px;font-size:12.5px;line-height:1.4;display:flex;flex-direction:column;gap:5px;-webkit-user-select:text;user-select:text;
   -webkit-mask-image:linear-gradient(transparent,#000 14px,#000 calc(100% - 10px),transparent);mask-image:linear-gradient(transparent,#000 14px,#000 calc(100% - 10px),transparent)}
 #log p{margin:0;color:#d8cbb0;display:grid;grid-template-columns:9px 1fr;gap:8px;align-items:baseline}
@@ -385,7 +440,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 .rod::before,.rod::after{content:"";position:absolute;top:-5px;width:32px;height:32px;border-radius:50%;
   background:radial-gradient(circle at 35% 30%,#fff3c4 0%,#f0c868 22%,#b07a22 60%,#5a3a0a 100%);box-shadow:0 3px 6px rgba(0,0,0,.5),0 0 12px rgba(255,200,90,.35)}
 .rod::before{left:-20px}.rod::after{right:-20px}
-.rod.top{margin-bottom:-6px}.rod.bot{margin-top:-6px}
+.rod.rtop{margin-bottom:-6px}.rod.rbot{margin-top:-6px}
 .sheet.home{width:auto;margin:0 6px;border:0;border-radius:3px;max-height:calc(100dvh - 32px - 44px);padding:26px 28px 22px;color:#3a2414;
   background:
     radial-gradient(ellipse at 18% 22%,rgba(160,110,40,.18),transparent 45%),
@@ -397,9 +452,12 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 .sheet.home::before{inset:10px;border:1px solid rgba(122,74,24,.45);border-radius:2px;box-shadow:0 0 0 3px rgba(243,230,198,.6),0 0 0 4px rgba(122,74,24,.3)}
 .sheet.home::-webkit-scrollbar{width:6px}.sheet.home::-webkit-scrollbar-thumb{background:rgba(122,74,24,.4);border-radius:3px}
 .scrollwrap.unroll .sheet.home{animation:unroll 1.05s cubic-bezier(.35,.75,.25,1) both}
-.scrollwrap.unroll .rod.top{animation:rodT 1.05s cubic-bezier(.35,.75,.25,1) both}
-.scrollwrap.unroll .rod.bot{animation:rodB 1.05s cubic-bezier(.35,.75,.25,1) both}
+.scrollwrap.unroll .rod.rtop{animation:rodT 1.05s cubic-bezier(.35,.75,.25,1) both}
+.scrollwrap.unroll .rod.rbot{animation:rodB 1.05s cubic-bezier(.35,.75,.25,1) both}
 @keyframes unroll{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}}
+.scrollwrap.rolled .sheet.home{clip-path:inset(50% 0 50% 0)}
+.scrollwrap.rolled .rod.rtop{transform:translateY(calc(var(--h,400px)/2 - 8px))}
+.scrollwrap.rolled .rod.rbot{transform:translateY(calc(var(--h,400px)/-2 + 8px))}
 @keyframes rodT{from{transform:translateY(calc(var(--h,400px)/2 - 8px))}to{transform:none}}
 @keyframes rodB{from{transform:translateY(calc(var(--h,400px)/-2 + 8px))}to{transform:none}}
 /* ink on parchment */
@@ -436,7 +494,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 .hmusic.on i{animation:noteBob .6s ease-in-out infinite}
 @keyframes noteBob{50%{transform:translateY(-3px) rotate(-10deg)}}
 @keyframes pulseRing{50%{box-shadow:0 0 0 5px rgba(122,28,28,.15)}}
-.htop{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.htop{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-bottom:8px;padding-right:62px}
 .htop .ver{margin-left:0;font-size:10.5px}
 .htop .linkbtn{font-size:13.5px}
 .htitle{padding-right:70px;margin:0 0 14px!important;background:linear-gradient(100deg,#6e3f0e 0%,#9a6418 28%,#e0b048 44%,#9a6418 60%,#6e3f0e 100%);background-size:250% 100%;
@@ -502,6 +560,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
       <button class="btn" id="bSfx" aria-pressed="true">Sound on</button>
       <button class="btn" id="bSky" title="Day and night: cycle, always day or always night">☼ Day & night</button>
       <button class="btn" id="bFollow" title="Camera follows the gnome as it moves">🎥 Follow: on</button>
+      <button class="btn" id="bLand" hidden>⟳ Landscape</button>
       <button class="btn" id="bCam">Reset view</button>
       <button class="btn" id="bHow">How to play</button>
       <button class="btn" id="bGrim">Grimoire</button>
@@ -532,8 +591,8 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 
 <div class="modal" id="forge">
   <div class="hfx" aria-hidden="true"><i class="au a1"></i><i class="au a2"></i><i class="au a3"></i><div class="spk" id="homeSparks"></div></div>
-  <div class="scrollwrap" id="scrollWrap">
-  <i class="rod top" aria-hidden="true"></i>
+  <div class="scrollwrap rolled" id="scrollWrap">
+  <i class="rod rtop" aria-hidden="true"></i>
   <form class="sheet home" id="forgeForm" autocomplete="off">
     <svg class="hgnome" viewBox="0 0 240 300" aria-hidden="true">
       <ellipse cx="120" cy="296" rx="70" ry="6" fill="rgba(255,200,110,.35)"/>
@@ -548,13 +607,10 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
       <g class="hg-hat"><path d="M62 112 C74 64 104 22 168 0 C150 40 168 76 178 112 Z" fill="#d23a2e"/><path d="M168 0 C150 40 168 76 178 112 L156 112 C150 72 142 34 168 0Z" fill="#000" opacity=".15"/>
         <rect x="54" y="102" width="132" height="22" rx="11" fill="#e2b85e"/><circle cx="120" cy="113" r="7" fill="#3fb0ff" stroke="#fff3c4" stroke-width="2.5"/></g></g>
     </svg>
-    <div class="htop"><span class="ver">Version 18</span><button type="button" class="linkbtn" id="forgeHow">How to play</button></div>
+    <div class="hleft">
+    <div class="htop"><span class="ver">Version 19</span><button type="button" class="linkbtn" id="forgeHow">How to play</button><button type="button" class="linkbtn landbtn" id="homeLand" hidden>⟳ Landscape</button></div>
     <h2 class="htitle">Gnomes of Hollowmere</h2>
     <div class="flourish"><button type="button" class="hmusic" id="homeMusic" aria-pressed="false"><i aria-hidden="true">♪</i><span>Tap for music</span></button></div>
-    <div id="contBox" hidden style="margin-bottom:14px">
-      <button type="button" class="cta ghost" id="contBtn">Continue saved game</button>
-      <p class="fine" id="contInfo" style="margin-top:6px"></p>
-    </div>
     <fieldset class="field">
       <legend>Difficulty</legend>
       <div class="dcards">
@@ -564,6 +620,12 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
       </div>
       <p class="fine" id="diffInfo" style="margin:4px 0 0"></p>
     </fieldset>
+    </div>
+    <div class="hright">
+    <div id="contBox" hidden style="margin-bottom:14px">
+      <button type="button" class="cta ghost" id="contBtn">Continue saved game</button>
+      <p class="fine" id="contInfo" style="margin-top:6px"></p>
+    </div>
     <div class="fgrid">
       <fieldset class="field">
         <legend>Gnomes</legend>
@@ -594,15 +656,16 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
       </div>
     </div>
     <button class="cta" type="submit">Forge the realm</button>
+    </div>
   </form>
-  <i class="rod bot" aria-hidden="true"></i>
+  <i class="rod rbot" aria-hidden="true"></i>
   </div>
 </div>
 
 <div class="modal" id="grim" hidden>
   <div class="sheet">
     <button class="btn x" id="grimClose" aria-label="Close grimoire">✕</button>
-    <p class="eyebrow">Field notes of the realm <span class="ver">Version 18</span></p>
+    <p class="eyebrow">Field notes of the realm <span class="ver">Version 19</span></p>
     <h2>Grimoire</h2>
     <p class="fine" style="margin:-2px 0 14px">New to the game? <button type="button" class="linkbtn" id="grimHow">Read how to play</button></p>
     <div class="gcols">
@@ -626,7 +689,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 <div class="modal" id="howto" hidden>
   <div class="sheet howsheet" role="dialog" aria-labelledby="howTitle">
     <button class="btn x" id="howClose" aria-label="Close how to play">✕</button>
-    <p class="eyebrow">For new adventurers <span class="ver">Version 18</span></p>
+    <p class="eyebrow">For new adventurers <span class="ver">Version 19</span></p>
     <h2 id="howTitle">How to play</h2>
     <p class="lede">Race your gnome from the Burrow on square 1 to the Summit Hearth on square 100. The first gnome to land <b>exactly</b> on 100 wins.</p>
     <div class="hgrid">
@@ -1674,28 +1737,29 @@ $('bChron').addEventListener('click',()=>setChron(!document.body.classList.conta
 $('chronTab').addEventListener('click',()=>setChron(true));
 $('chronClose').addEventListener('click',()=>setChron(false));
 $('bMenu').addEventListener('click',()=>{const o=!document.body.classList.contains('menu-open');document.body.classList.toggle('menu-open',o);$('bMenu').setAttribute('aria-expanded',String(o));if(o)setChron(false);});
-document.querySelector('.tools').addEventListener('click',e=>{if(e.target.closest('.btn')&&e.target.id!=='bTrack'&&e.target.id!=='bMusic'&&e.target.id!=='bSfx'&&e.target.id!=='bSky'&&e.target.id!=='bFollow')document.body.classList.remove('menu-open');});
+document.querySelector('.tools').addEventListener('click',e=>{if(e.target.closest('.btn')&&e.target.id!=='bTrack'&&e.target.id!=='bMusic'&&e.target.id!=='bSfx'&&e.target.id!=='bSky'&&e.target.id!=='bFollow'&&e.target.id!=='bLand')document.body.classList.remove('menu-open');});
 /* Arrange the HUD around the board for the current screen, then fit the board into the space left free. */
 let layQueued=false;
 function queueLayout(){if(layQueued)return;layQueued=true;requestAnimationFrame(()=>{layQueued=false;layoutHud();});}
 function layoutHud(){
   const W=innerWidth,H=innerHeight,b=document.body,a=W/H,top=document.querySelector('.top'),dice=$('dicebox');
-  const mode=(a<1||W<700)?'stack':(W-600>=.95*(H-110)?'wide':'side');
-  for(const m of['wide','side','stack'])b.classList.toggle('lay-'+m,m===mode);
+  const mode=(H<540&&a>=1.3)?'short':(a<1||W<700)?'stack':(W-600>=.95*(H-110)?'wide':'side');
+  for(const m of['wide','side','stack','short'])b.classList.toggle('lay-'+m,m===mode);
   b.classList.toggle('roomy',mode==='stack'&&W>=700);
-  if(mode!=='stack')b.classList.remove('menu-open');
+  if(mode!=='stack'&&mode!=='short')b.classList.remove('menu-open');
   if(mode==='wide')b.classList.remove('chron-open');
   party.style.gridTemplateRows='';
   const cs=getComputedStyle($('hud')),pt=parseFloat(cs.paddingTop),pb=parseFloat(cs.paddingBottom),pl=parseFloat(cs.paddingLeft),pr0=parseFloat(cs.paddingRight);
   if(mode!=='stack'&&party.firstElementChild){
-    const ch=party.firstElementChild.offsetHeight||120,tb=top.getBoundingClientRect().bottom;
+    const ch=party.firstElementChild.offsetHeight||120,tb=top.getBoundingClientRect().bottom,gp=mode==='short'?6:8;
     const avail=H-pb-tb-10-(mode==='side'?dice.offsetHeight+10:0);
-    party.style.gridTemplateRows=`repeat(${Math.max(1,Math.floor((avail+8)/(ch+8)))},auto)`;}
-  const tb=(mode==='stack'?document.querySelector('.crest'):top).getBoundingClientRect().bottom+6;
+    party.style.gridTemplateRows=`repeat(${Math.max(1,Math.floor((avail+gp)/(ch+gp)))},auto)`;}
+  const tb=(mode==='stack'?document.querySelector('.crest'):mode==='short'?{getBoundingClientRect:()=>({bottom:pt-6})}:top).getBoundingClientRect().bottom+6;
   const hasP=!!party.firstElementChild,pR=party.getBoundingClientRect(),dR=dice.getBoundingClientRect(),cR=chronEl.getBoundingClientRect();
   let x0=pl,x1=W-pr0,y0=tb,y1=H-pb;
   if(mode==='wide'){x0=hasP?pR.right+8:pl;x1=Math.min(dR.left,cR.left)-8;}
   else if(mode==='side'){x0=Math.max(hasP?pR.right:0,dR.right)+8;x1=W-$('chronTab').offsetWidth-8;}
+  else if(mode==='short'){x0=Math.max(hasP?pR.right:0,top.getBoundingClientRect().right)+6;x1=dR.left-6;}
   else{x0=6;x1=W-6;y1=Math.min(hasP?pR.top:H,dR.top)-6;}
   if(b.classList.contains('forging')){x0=pl;x1=W-pr0;y1=H-pb;}
   fitBoard(x0,y0,x1,y1);
@@ -2369,9 +2433,10 @@ $('howClose').addEventListener('click',closeHow);$('howGo').addEventListener('cl
 $('howGrim').addEventListener('click',()=>{closeHow();$('grim').hidden=false;$('grimClose').focus();});
 $('grimClose').addEventListener('click',()=>{$('grim').hidden=true;});
 $('grim').addEventListener('click',e=>{if(e.target.id==='grim')$('grim').hidden=true;});
-function afterSplash(f){if(document.getElementById('splash'))(window.__afterSplashQ=window.__afterSplashQ||[]).push(f);else f();}
+function afterSplash(f){if(document.getElementById('splash')&&!window.__splashDone)(window.__afterSplashQ=window.__afterSplashQ||[]).push(f);else f();}
 /* The home scroll unrolls from its middle each time it opens */
-function unrollScroll(){const w=$('scrollWrap'),f=$('forgeForm');if(!w||RM)return;w.classList.remove('unroll');w.style.setProperty('--h',f.offsetHeight+'px');void w.offsetWidth;w.classList.add('unroll');}
+function unrollScroll(){const w=$('scrollWrap'),f=$('forgeForm');if(!w)return;w.classList.remove('rolled');if(RM)return;w.classList.remove('unroll');w.style.setProperty('--h',f.offsetHeight+'px');void w.offsetWidth;w.classList.add('unroll');}
+function rollScroll(){const w=$('scrollWrap'),f=$('forgeForm');if(!w||RM)return;w.classList.remove('unroll');w.style.setProperty('--h',f.offsetHeight+'px');w.classList.add('rolled');}
 /* Music on the home screen. Browsers only allow sound after the first tap or key, so the music starts then
    (straight away where the app shell allows it) and simply carries on into the game. */
 function syncMusicUI(){const on=AU.musicOn&&!!Bard.timer&&!!AU.ctx&&AU.ctx.state==='running',hm=$('homeMusic');
@@ -2383,9 +2448,28 @@ function startMusic(){if(!AU.musicOn)return syncMusicUI();AU.init();if(!AU.ctx)r
  const off=()=>['pointerup','keydown','touchend'].forEach(t=>removeEventListener(t,kick,true));
  ['pointerup','keydown','touchend'].forEach(t=>addEventListener(t,kick,true));
  afterSplash(()=>{try{if(AU.musicOn){AU.init();if(AU.ctx&&AU.ctx.state==='running'){Bard.start();off();}}}catch(e){}syncMusicUI();});}
+/* Landscape option for phones and tablets. The Android app locks the screen through its native plugin; browsers
+   that allow it go full screen and lock sideways; elsewhere (iPhone, iPad) the player is asked to turn the device. */
+let LAND=false;try{LAND=localStorage.getItem('hollowmere-land')==='1';}catch(e){}
+const TOUCH=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+function nativeOrientation(){const C=window.Capacitor;if(!C)return null;return(C.Plugins&&C.Plugins.ScreenOrientation)||(C.registerPlugin?C.registerPlugin('ScreenOrientation'):null);}
+function isLandLocked(){return LAND&&(!!nativeOrientation()||!!document.fullscreenElement);}
+function landLabel(){const t=LAND?'⟲ Exit landscape':'⟳ Landscape';['homeLand','bLand'].forEach(id=>{const b=$(id);if(b){b.textContent=t;b.hidden=!TOUCH;b.setAttribute('aria-pressed',String(LAND));}});}
+async function applyLandscape(on){
+  const SO=nativeOrientation();
+  if(SO){try{on?await SO.lock({orientation:'landscape'}):await SO.unlock();}catch(e){}return true;}
+  if(on){let ok=false;
+    try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen({navigationUI:'hide'});}catch(e){}
+    try{if(screen.orientation&&screen.orientation.lock){await screen.orientation.lock('landscape');ok=true;}}catch(e){}
+    if(!ok&&innerHeight>innerWidth){banner('Turn your device sideways','This browser cannot rotate the game itself. Turn off rotation lock and hold your device sideways; the game rearranges itself.','arcane');setTimeout(hideBanner,5200);}
+    return ok;}
+  try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}
+  try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen();}catch(e){}
+  return true;}
+async function toggleLandscape(){LAND=!LAND;try{localStorage.setItem('hollowmere-land',LAND?'1':'0');}catch(e){}landLabel();await applyLandscape(LAND);queueLayout();}
 function openForge(seed){
   const dr=document.querySelector(`input[name=diff][value=${G.dk||'medium'}]`);if(dr){dr.checked=true;if(typeof showDiffInfo==='function')showDiffInfo();}
-  $('seed').value=seed||randomSeed();$('forge').hidden=false;document.body.classList.add('forging');controls.autoRotate=true;queueLayout();afterSplash(unrollScroll);
+  $('seed').value=seed||randomSeed();$('forge').hidden=false;document.body.classList.add('forging');controls.autoRotate=true;queueLayout();rollScroll();afterSplash(unrollScroll);
   const s=loadSave();$('contBox').hidden=!s;
   if(s){const lead=s.players.slice().sort((a,b)=>b.pos-a.pos)[0];$('contInfo').textContent=`${(DIFFS[s.dk]||DIFFS.medium).label} · realm “${s.seed}”, round ${s.round}${s.rounds?` of ${s.rounds}`:''}. ${lead.name} leads on square ${lead.pos}.`;}
 }
@@ -2396,11 +2480,13 @@ $('difflabel').addEventListener('click',()=>{if(G.busy&&!G.over)return;$('win').
 {const box=$('homeSparks');if(box&&!RM){let h='';for(let i=0;i<28;i++){const x=Math.random()*100,d=9+Math.random()*12,dl=-Math.random()*d,sz=2+Math.random()*3,c=['#ffe2a0','#bfe4ff','#ffc1e6','#c8ffd8'][i%4];
   h+=`<i style="left:${x}%;width:${sz}px;height:${sz}px;background:${c};box-shadow:0 0 ${sz*3}px ${c};animation-duration:${d}s,${2+Math.random()*2}s;animation-delay:${dl}s,${-Math.random()*3}s"></i>`;}box.innerHTML=h;}}
 $('reseed').addEventListener('click',()=>{$('seed').value=randomSeed();});
-$('forgeForm').addEventListener('submit',e=>{e.preventDefault();AU.init();Bard.start();requestMotion();
+$('homeLand').addEventListener('click',toggleLandscape);$('bLand').addEventListener('click',toggleLandscape);landLabel();
+addEventListener('orientationchange',()=>setTimeout(queueLayout,250));document.addEventListener('fullscreenchange',queueLayout);
+$('forgeForm').addEventListener('submit',e=>{e.preventDefault();AU.init();Bard.start();requestMotion();if(LAND&&!isLandLocked())applyLandscape(true);
   const seed=($('seed').value.trim()||randomSeed()).slice(0,40),count=+document.querySelector('input[name=count]:checked').value,mode=document.querySelector('input[name=mode]:checked').value,rounds=+document.querySelector('input[name=rounds]:checked').value;
   const dk=document.querySelector('input[name=diff]:checked').value;
   $('forge').hidden=true;newGame(seed,count,mode,rounds,null,dk);});
-$('contBtn').addEventListener('click',()=>{const s=loadSave();if(!s)return;AU.init();Bard.start();requestMotion();$('forge').hidden=true;newGame(s.seed,s.players.length,s.mode,s.rounds|0,s,s.dk);});
+$('contBtn').addEventListener('click',()=>{const s=loadSave();if(!s)return;AU.init();Bard.start();requestMotion();if(LAND&&!isLandLocked())applyLandscape(true);$('forge').hidden=true;newGame(s.seed,s.players.length,s.mode,s.rounds|0,s,s.dk);});
 $('winReplay').addEventListener('click',()=>{$('win').hidden=true;newGame(realm.seed,G.count,G.mode,G.matchRounds,null,G.dk);});
 $('winNew').addEventListener('click',()=>{$('win').hidden=true;openForge();});
 function renderGrimoire(){
@@ -2488,7 +2574,6 @@ G.dk='medium';G.diff=DIFFS.medium;setDie('d12');
 function showDiffInfo(){const r=document.querySelector('input[name=diff]:checked');$('diffInfo').textContent=DIFFS[r?r.value:'medium'].blurb.replace(/^[^.]*\.\s*/,'');}
 document.querySelectorAll('input[name=diff]').forEach(r=>r.addEventListener('change',showDiffInfo));showDiffInfo();
 openForge();window.__booted=true;
-{let seen=null;try{seen=localStorage.getItem('hollowmere-howto');}catch(e){}if(!seen){afterSplash(()=>setTimeout(openHow,1150));}}
 const fontsReady=document.fonts&&document.fonts.load?Promise.race([Promise.all([document.fonts.load('700 38px "Alegreya Sans"'),document.fonts.load('400 42px "IM Fell English SC"')]),wait(2500)]):Promise.resolve();
 window.__sp&&__sp(75);
 fontsReady.catch(()=>{}).then(()=>{repaintDice();realm=generateRealm($('seed').value,'medium');buildRealm();realm.respawnQ=[];$('seedlabel').textContent=realm.seed;
