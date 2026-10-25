@@ -1,5 +1,5 @@
 <title>Gnomes of Hollowmere</title>
-<meta name="game-version" content="17 (25 Oct 2026): phone layout of the title screen">
+<meta name="game-version" content="18 (25 Oct 2026): royal scroll home screen with music">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -65,7 +65,7 @@
 (function(){var t0=Date.now(),msgs=['Polishing the dice…','Waking the dragon (carefully)…','Counting mushrooms…','Untangling the vine ladders…','Bribing the goblins…','Teaching the troll to share…','Lighting the summit hearth…','Feeding the hydra (all its heads)…'],i=0,
   m=document.getElementById('spMsg'),tm=setInterval(function(){i=(i+1)%msgs.length;if(m)m.textContent=msgs[i];},1500);
   window.__sp=function(p){var b=document.getElementById('spBar');if(b)b.style.transform='scaleX('+Math.max(.08,Math.min(1,p/100))+')';};
-  window.__spDone=function(){window.__sp(100);var wait=Math.max(0,2300-(Date.now()-t0));setTimeout(function(){var s=document.getElementById('splash');if(!s)return;s.classList.add('gone');clearInterval(tm);setTimeout(function(){s.remove();if(window.__afterSplash)window.__afterSplash();},800);},wait);};
+  window.__spDone=function(){window.__sp(100);var wait=Math.max(0,2300-(Date.now()-t0));setTimeout(function(){var s=document.getElementById('splash');if(!s)return;s.classList.add('gone');clearInterval(tm);setTimeout(function(){s.remove();(window.__afterSplashQ||[]).forEach(function(f){try{f()}catch(e){}});window.__afterSplashQ=null;},800);},wait);};
   window.__sp(12);})();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -364,6 +364,93 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
   .sheet{padding:20px 16px 16px}
   .tools .btn{padding:7px 9px;font-size:12px}
 }
+/* Home screen */
+#forge{background:radial-gradient(ellipse at 50% 45%,rgba(8,5,12,.05) 0%,rgba(8,5,12,.45) 70%,rgba(8,5,12,.75) 100%);overflow:hidden}
+.hfx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hfx .au{position:absolute;width:70vmax;height:70vmax;border-radius:50%;opacity:.75;mix-blend-mode:screen}
+.hfx .a1{left:-25vmax;top:-30vmax;background:radial-gradient(circle,rgba(120,70,200,.55),rgba(120,70,200,0) 62%);animation:auA 26s ease-in-out infinite alternate}
+.hfx .a2{right:-30vmax;top:-10vmax;background:radial-gradient(circle,rgba(40,150,170,.45),rgba(40,150,170,0) 62%);animation:auB 31s ease-in-out infinite alternate}
+.hfx .a3{left:-10vmax;bottom:-40vmax;background:radial-gradient(circle,rgba(220,140,60,.35),rgba(220,140,60,0) 62%);animation:auC 23s ease-in-out infinite alternate}
+@keyframes auA{to{transform:translate(18vmax,12vmax) scale(1.15)}}
+@keyframes auB{to{transform:translate(-16vmax,18vmax) scale(.9)}}
+@keyframes auC{to{transform:translate(14vmax,-14vmax) scale(1.1)}}
+.spk{position:absolute;inset:0}
+.spk i{position:absolute;bottom:-12px;border-radius:50%;opacity:.8;animation-name:spkUp,spkTw;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite}
+@keyframes spkUp{to{transform:translateY(-110vh) translateX(6vw)}}
+@keyframes spkTw{50%{opacity:.25}}
+/* The home screen is a royal scroll: parchment between two wooden rollers with gold finials */
+.scrollwrap{position:relative;width:min(100%,660px);display:flex;flex-direction:column;align-items:stretch;pointer-events:auto;filter:drop-shadow(0 26px 50px rgba(0,0,0,.6))}
+.rod{position:relative;display:block;height:22px;margin:0 -2px;border-radius:11px;z-index:3;
+  background:linear-gradient(#3a1f0a,#8a5426 22%,#c88a48 42%,#7a4418 66%,#2e1806);box-shadow:0 4px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,220,160,.35)}
+.rod::before,.rod::after{content:"";position:absolute;top:-5px;width:32px;height:32px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff3c4 0%,#f0c868 22%,#b07a22 60%,#5a3a0a 100%);box-shadow:0 3px 6px rgba(0,0,0,.5),0 0 12px rgba(255,200,90,.35)}
+.rod::before{left:-20px}.rod::after{right:-20px}
+.rod.top{margin-bottom:-6px}.rod.bot{margin-top:-6px}
+.sheet.home{width:auto;margin:0 6px;border:0;border-radius:3px;max-height:calc(100dvh - 32px - 44px);padding:26px 28px 22px;color:#3a2414;
+  background:
+    radial-gradient(ellipse at 18% 22%,rgba(160,110,40,.18),transparent 45%),
+    radial-gradient(ellipse at 82% 78%,rgba(150,90,30,.16),transparent 50%),
+    radial-gradient(ellipse at 60% 10%,rgba(255,255,240,.5),transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,#d9c193 0%,#efe0bb 9%,#f3e6c6 50%,#ecdcb3 91%,#d4ba88 100%);
+  box-shadow:inset 0 0 60px rgba(120,72,20,.35),inset 0 14px 18px -10px rgba(60,30,5,.45),inset 0 -14px 18px -10px rgba(60,30,5,.45)}
+.sheet.home::before{inset:10px;border:1px solid rgba(122,74,24,.45);border-radius:2px;box-shadow:0 0 0 3px rgba(243,230,198,.6),0 0 0 4px rgba(122,74,24,.3)}
+.sheet.home::-webkit-scrollbar{width:6px}.sheet.home::-webkit-scrollbar-thumb{background:rgba(122,74,24,.4);border-radius:3px}
+.scrollwrap.unroll .sheet.home{animation:unroll 1.05s cubic-bezier(.35,.75,.25,1) both}
+.scrollwrap.unroll .rod.top{animation:rodT 1.05s cubic-bezier(.35,.75,.25,1) both}
+.scrollwrap.unroll .rod.bot{animation:rodB 1.05s cubic-bezier(.35,.75,.25,1) both}
+@keyframes unroll{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes rodT{from{transform:translateY(calc(var(--h,400px)/2 - 8px))}to{transform:none}}
+@keyframes rodB{from{transform:translateY(calc(var(--h,400px)/-2 + 8px))}to{transform:none}}
+/* ink on parchment */
+#forge .home legend,#forge .home .field>label{color:#7a5532;font-weight:700}
+#forge .home .ver{color:#7a1c1c;border-color:rgba(122,28,28,.5);background:rgba(255,248,230,.5)}
+#forge .home .linkbtn{color:#7a1c1c}
+#forge .home .linkbtn:hover{color:#a3262a}
+#forge .home .fine{color:#6a4a2c}
+#forge .home .seedhint{color:#8a6a48}
+.flourish{display:flex;align-items:center;gap:10px;margin:-6px 0 12px;color:#8a5a20}
+.flourish::before,.flourish::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(122,74,24,.6),transparent)}
+.flourish span{font-size:15px;line-height:1}
+#forge .home .dcard span{background:rgba(255,250,236,.45);border-color:rgba(110,70,30,.35)}
+#forge .home .dcard b{color:#3a2414}
+#forge .home .dcard i{color:#8a1f1f}
+#forge .home .dcard em{color:#5e4430}
+#forge .home .dcard:hover span{background:rgba(255,250,236,.75)}
+#forge .home .dcard input:checked+span{background:linear-gradient(rgba(138,31,31,.14),rgba(138,31,31,.08));border-color:#8a1f1f;box-shadow:0 0 0 1px #8a1f1f,0 4px 14px rgba(122,28,28,.22)}
+#forge .home .dcard input:checked+span b{color:#7a1c1c}
+#forge .home .seg span{background:rgba(255,250,236,.45);border-color:rgba(110,70,30,.4);color:#4a3020}
+#forge .home .seg input:checked+span{background:linear-gradient(#9a2a26,#6e1518);color:#fbe7b8;border-color:#5a1010;box-shadow:inset 0 1px 0 rgba(255,200,160,.3)}
+#forge .home #seed{background:rgba(255,252,242,.7);color:#2a1a0e;border-color:rgba(110,70,30,.45)}
+#forge .home .btn{color:#4a3020;border-color:rgba(110,70,30,.45);background:rgba(255,250,236,.45)}
+#forge .home .btn:hover{background:rgba(255,250,236,.85)}
+#forge .home .cta[type=submit]{position:relative;color:#fbe3a0;background:linear-gradient(#b0302c,#7a1a1c 60%,#5e1214);border:1px solid #d9a441;
+  box-shadow:0 0 0 3px rgba(217,164,65,.25),0 8px 18px rgba(90,16,16,.35),inset 0 1px 0 rgba(255,200,170,.35);text-shadow:0 1px 0 rgba(0,0,0,.4)}
+#forge .home .cta[type=submit]:hover{filter:brightness(1.08)}
+#forge .home .cta.ghost{color:#4a3020;border-color:rgba(110,70,30,.5);background:rgba(255,250,236,.5)}
+#forge .home button:focus-visible,#forge .home input:focus-visible+span,#forge .home input:focus-visible{outline-color:#7a1c1c}
+.hmusic{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px 0 8px;border-radius:13px;border:1px solid rgba(122,28,28,.45);
+  background:rgba(255,248,230,.6);color:#7a1c1c;font:700 11.5px var(--f-body);letter-spacing:.03em;cursor:pointer;white-space:nowrap;flex:none}
+.hmusic i{font-style:normal;font-size:14px;animation:noteBob 1.4s ease-in-out infinite}
+.hmusic:not(.on){animation:pulseRing 2.2s ease-in-out infinite}
+.hmusic.on i{animation:noteBob .6s ease-in-out infinite}
+@keyframes noteBob{50%{transform:translateY(-3px) rotate(-10deg)}}
+@keyframes pulseRing{50%{box-shadow:0 0 0 5px rgba(122,28,28,.15)}}
+.htop{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.htop .ver{margin-left:0;font-size:10.5px}
+.htop .linkbtn{font-size:13.5px}
+.htitle{padding-right:70px;margin:0 0 14px!important;background:linear-gradient(100deg,#6e3f0e 0%,#9a6418 28%,#e0b048 44%,#9a6418 60%,#6e3f0e 100%);background-size:250% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;animation:shimmer 7s linear infinite;filter:drop-shadow(0 1px 0 rgba(255,250,230,.8))}
+@keyframes shimmer{from{background-position:120% 0}to{background-position:-130% 0}}
+.hgnome{position:absolute;right:22px;top:14px;width:62px;height:78px;overflow:visible;z-index:2}
+.hg-body{transform-box:fill-box;transform-origin:50% 100%;animation:hgHop 1.6s cubic-bezier(.3,.1,.4,1) infinite}
+@keyframes hgHop{0%,40%,100%{transform:translateY(0) scale(1.06,.94)}12%{transform:translateY(-18px) scale(.97,1.04)}22%{transform:translateY(-2px) scale(1.04,.96)}30%{transform:translateY(-9px)}}
+.hg-hat{transform-box:fill-box;transform-origin:50% 100%;animation:hgHat 1.6s ease-in-out infinite}
+@keyframes hgHat{0%,40%,100%{transform:rotate(4deg)}14%{transform:rotate(-12deg)}26%{transform:rotate(8deg)}}
+.hg-eye{transform-box:fill-box;transform-origin:50% 50%;animation:spBlink 3.6s infinite}
+.seedhint{text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--muted);opacity:.85}
+.fgrid .fwide{grid-column:auto}
+@media (prefers-reduced-motion:reduce){.hfx .au,.spk i,.htitle,.hg-body,.hg-hat,.hmusic,.hmusic i,.scrollwrap.unroll *{animation:none!important}}
 /* Phones: title screen difficulty choices become full-width rows, and the sheet is tightened so it fits with less scrolling */
 @media (max-width:560px){
   .dcards{grid-template-columns:1fr;gap:6px}
@@ -379,6 +466,16 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
   #forge .fgrid .field{margin-bottom:10px}
   #forge .seg span{padding:7px 11px}
   #forge .cta{padding:11px 14px 12px}
+  #forge .sheet.home{padding:20px 16px 16px;margin:0 4px;max-height:calc(100dvh - 24px - 40px)}
+  .rod::before,.rod::after{width:28px;height:28px;top:-3px}.rod::before{left:-12px}.rod::after{right:-12px}
+  #forge .htitle{font-size:clamp(27px,8vw,34px);padding-right:58px;margin-bottom:12px!important}
+  #forge .hgnome{right:14px;top:12px;width:52px;height:66px}
+  #forge .fgrid{grid-template-columns:auto auto;justify-content:space-between;column-gap:8px}
+  #forge .fgrid .fwide{grid-column:1/-1}
+  #forge .fgrid .seg{gap:5px}
+  #forge .fgrid .seg{gap:4px;flex-wrap:nowrap}
+  #forge .fgrid .seg span{padding:7px 8px;font-size:14px}
+  #forge .fgrid .fwide .seg span{padding:7px 10px}
 }
 @media (prefers-reduced-motion:reduce){.slot.usable,.pad.held svg{animation:none}#reveal.on{animation-duration:.01s}}
 </style>
@@ -434,16 +531,32 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 </div>
 
 <div class="modal" id="forge">
-  <form class="sheet" id="forgeForm" autocomplete="off">
-    <p class="eyebrow">A board game of small heroes and large teeth <span class="ver">Version 17</span></p>
-    <h2>Gnomes of Hollowmere</h2>
-    <p class="lede">Race your gnome from the Burrow to land exactly on the Summit Hearth, square 100, past vine ladders, monster lairs and relic crystals. <button type="button" class="linkbtn" id="forgeHow">New here? How to play</button></p>
+  <div class="hfx" aria-hidden="true"><i class="au a1"></i><i class="au a2"></i><i class="au a3"></i><div class="spk" id="homeSparks"></div></div>
+  <div class="scrollwrap" id="scrollWrap">
+  <i class="rod top" aria-hidden="true"></i>
+  <form class="sheet home" id="forgeForm" autocomplete="off">
+    <svg class="hgnome" viewBox="0 0 240 300" aria-hidden="true">
+      <ellipse cx="120" cy="296" rx="70" ry="6" fill="rgba(255,200,110,.35)"/>
+      <g class="hg-body"><path d="M58 296 C54 230 78 196 120 196 C162 196 186 230 182 296 Z" fill="#3d68bd"/>
+      <rect x="60" y="250" width="120" height="16" rx="6" fill="#5a3418"/><rect x="110" y="248" width="20" height="20" rx="3" fill="#e2b85e"/>
+      <path d="M64 150 C58 214 92 262 120 272 C148 262 182 214 176 150 C160 172 80 172 64 150 Z" fill="#fbf8ff"/>
+      <ellipse cx="120" cy="142" rx="54" ry="44" fill="#f7c9ab"/>
+      <ellipse class="hg-eye" cx="100" cy="134" rx="6" ry="7.5" fill="#2a1a10"/><ellipse class="hg-eye" cx="140" cy="134" rx="6" ry="7.5" fill="#2a1a10"/>
+      <ellipse cx="86" cy="156" rx="10" ry="6" fill="#ff8a8a" opacity=".5"/><ellipse cx="154" cy="156" rx="10" ry="6" fill="#ff8a8a" opacity=".5"/>
+      <ellipse cx="120" cy="156" rx="15" ry="13" fill="#f0a27e"/>
+      <path d="M120 168 C100 160 82 168 72 178 C92 182 108 178 120 172 C132 178 148 182 168 178 C158 168 140 160 120 168Z" fill="#fff"/>
+      <g class="hg-hat"><path d="M62 112 C74 64 104 22 168 0 C150 40 168 76 178 112 Z" fill="#d23a2e"/><path d="M168 0 C150 40 168 76 178 112 L156 112 C150 72 142 34 168 0Z" fill="#000" opacity=".15"/>
+        <rect x="54" y="102" width="132" height="22" rx="11" fill="#e2b85e"/><circle cx="120" cy="113" r="7" fill="#3fb0ff" stroke="#fff3c4" stroke-width="2.5"/></g></g>
+    </svg>
+    <div class="htop"><span class="ver">Version 18</span><button type="button" class="linkbtn" id="forgeHow">How to play</button></div>
+    <h2 class="htitle">Gnomes of Hollowmere</h2>
+    <div class="flourish"><button type="button" class="hmusic" id="homeMusic" aria-pressed="false"><i aria-hidden="true">♪</i><span>Tap for music</span></button></div>
     <div id="contBox" hidden style="margin-bottom:14px">
       <button type="button" class="cta ghost" id="contBtn">Continue saved game</button>
       <p class="fine" id="contInfo" style="margin-top:6px"></p>
     </div>
     <fieldset class="field">
-      <legend>Choose difficulty</legend>
+      <legend>Difficulty</legend>
       <div class="dcards">
         <label class="dcard"><input type="radio" name="diff" value="easy" id="dEasy"><span><b>Easy</b><i>Six-sided die</i><em>All forward · roll a 6 to go again</em></span></label>
         <label class="dcard"><input type="radio" name="diff" value="medium" id="dMed" checked><span><b>Medium</b><i>Twelve-sided die</i><em>9 faces forward · 3 back</em></span></label>
@@ -453,7 +566,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
     </fieldset>
     <div class="fgrid">
       <fieldset class="field">
-        <legend>Gnomes at the table</legend>
+        <legend>Gnomes</legend>
         <div class="seg">
           <label><input type="radio" name="count" value="2" id="c2" checked><span>Two</span></label>
           <label><input type="radio" name="count" value="3" id="c3"><span>Three</span></label>
@@ -461,13 +574,13 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
         </div>
       </fieldset>
       <fieldset class="field">
-        <legend>Rivals played by</legend>
+        <legend>Rivals</legend>
         <div class="seg">
           <label><input type="radio" name="mode" value="ai" id="mAi" checked><span>AI</span></label>
           <label><input type="radio" name="mode" value="hot" id="mHot"><span>Friends here</span></label>
         </div>
       </fieldset>
-      <fieldset class="field">
+      <fieldset class="field fwide">
         <legend>Match length</legend>
         <div class="seg">
           <label><input type="radio" name="rounds" value="0" id="r0" checked><span>Race to 100</span></label>
@@ -475,20 +588,21 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
           <label><input type="radio" name="rounds" value="30" id="r30"><span>30</span></label>
         </div>
       </fieldset>
-      <div class="field">
-        <label for="seed">Realm seed</label>
+      <div class="field fwide">
+        <label for="seed">Realm seed <span class="seedhint">· same seed, same board</span></label>
         <div class="row"><input id="seed" maxlength="40" spellcheck="false"><button type="button" class="btn" id="reseed">Reroll</button></div>
       </div>
     </div>
     <button class="cta" type="submit">Forge the realm</button>
-    <p class="fine" id="forgeTip">Same seed, same board. To roll, wiggle the mouse over the die, hold and shake it, press Space, or tap Roll dice. Games save after every turn.</p>
   </form>
+  <i class="rod bot" aria-hidden="true"></i>
+  </div>
 </div>
 
 <div class="modal" id="grim" hidden>
   <div class="sheet">
     <button class="btn x" id="grimClose" aria-label="Close grimoire">✕</button>
-    <p class="eyebrow">Field notes of the realm <span class="ver">Version 17</span></p>
+    <p class="eyebrow">Field notes of the realm <span class="ver">Version 18</span></p>
     <h2>Grimoire</h2>
     <p class="fine" style="margin:-2px 0 14px">New to the game? <button type="button" class="linkbtn" id="grimHow">Read how to play</button></p>
     <div class="gcols">
@@ -512,7 +626,7 @@ kbd{font:700 11.5px var(--f-body);padding:1px 6px;border:1px solid var(--edge);b
 <div class="modal" id="howto" hidden>
   <div class="sheet howsheet" role="dialog" aria-labelledby="howTitle">
     <button class="btn x" id="howClose" aria-label="Close how to play">✕</button>
-    <p class="eyebrow">For new adventurers <span class="ver">Version 17</span></p>
+    <p class="eyebrow">For new adventurers <span class="ver">Version 18</span></p>
     <h2 id="howTitle">How to play</h2>
     <p class="lede">Race your gnome from the Burrow on square 1 to the Summit Hearth on square 100. The first gnome to land <b>exactly</b> on 100 wins.</p>
     <div class="hgrid">
@@ -710,7 +824,7 @@ const Bard={mood:'calm',ti:0,step:0,next:0,timer:null,mi:4,elapsed:0,
   stop(){clearInterval(this.timer);this.timer=null;},
   set(m){if(m!==this.mood){this.mood=m;this.step=0;}},
   nextTrack(){this.ti=(this.ti+1)%TRACKS.length;this.elapsed=0;if(this.mood==='calm')this.step=0;this.mi=3;
-    const b=document.getElementById('bTrack');if(b)b.textContent='♪ '+TRACKS[this.ti].name;
+    const b=document.getElementById('bTrack');if(b)b.textContent='♪ '+TRACKS[this.ti].name;const hm=document.querySelector('#homeMusic.on span');if(hm)hm.textContent=TRACKS[this.ti].name;
     if(AU.ctx&&AU.music){const g=AU.music.gain,n=AU.ctx.currentTime;g.cancelScheduledValues(n);g.setValueAtTime(.12,n);g.linearRampToValueAtTime(.5,n+1.6);}},
   tick(){const c=AU.ctx;while(this.next<c.currentTime+.2){const T=this.cur(),st=60/T.bpm/2;this.play(this.step,this.next,st,T);this.next+=st;this.step++;
       if(this.mood==='calm'){this.elapsed+=st;if(this.step%T.steps===0&&this.elapsed>=80)this.nextTrack();}}},
@@ -2237,8 +2351,10 @@ rollBtn.addEventListener('click',()=>{AU.init();if(canHumanRoll())doRoll(.5);});
 addEventListener('keydown',e=>{if(e.code==='Escape'){$('grim').hidden=true;if(!$('howto').hidden)closeHow();return;}
   if(e.target&&e.target.tagName==='INPUT')return;
   if((e.code==='Space'||e.code==='Enter')&&!(e.target&&e.target.tagName==='BUTTON')&&canHumanRoll()){e.preventDefault();AU.init();doRoll(.5);}});
-$('bMusic').addEventListener('click',e=>{AU.init();AU.musicOn=!AU.musicOn;e.currentTarget.setAttribute('aria-pressed',AU.musicOn);e.currentTarget.textContent=AU.musicOn?'Music on':'Music off';AU.musicOn?Bard.start():Bard.stop();});
-$('bTrack').addEventListener('click',()=>{AU.init();Bard.nextTrack();if(AU.musicOn)Bard.start();});
+$('bMusic').addEventListener('click',()=>{AU.init();AU.musicOn=!AU.musicOn;try{localStorage.setItem('hollowmere-music',AU.musicOn?'1':'0');}catch(e){}AU.musicOn?Bard.start():Bard.stop();syncMusicUI();});
+$('homeMusic').addEventListener('click',()=>{const playing=AU.musicOn&&!!Bard.timer&&AU.ctx&&AU.ctx.state==='running';AU.musicOn=!playing;try{localStorage.setItem('hollowmere-music',AU.musicOn?'1':'0');}catch(e){}if(AU.musicOn)startMusic();else{Bard.stop();syncMusicUI();}});
+try{if(localStorage.getItem('hollowmere-music')==='0')AU.musicOn=false;}catch(e){}
+$('bTrack').addEventListener('click',()=>{AU.init();Bard.nextTrack();if(AU.musicOn)Bard.start();syncMusicUI();});
 $('bSfx').addEventListener('click',e=>{AU.init();AU.sfxOn=!AU.sfxOn;e.currentTarget.setAttribute('aria-pressed',AU.sfxOn);e.currentTarget.textContent=AU.sfxOn?'Sound on':'Sound off';});
 $('bCam').addEventListener('click',async()=>{if(cut||cam)return;const h=homeCam();controls.enabled=false;await camTo(h.pos,h.target,600);camera.position.copy(h.pos);controls.target.copy(h.target);cam=null;controls.enabled=true;});
 $('bGrim').addEventListener('click',()=>{$('grim').hidden=false;$('grimClose').focus();});
@@ -2253,16 +2369,32 @@ $('howClose').addEventListener('click',closeHow);$('howGo').addEventListener('cl
 $('howGrim').addEventListener('click',()=>{closeHow();$('grim').hidden=false;$('grimClose').focus();});
 $('grimClose').addEventListener('click',()=>{$('grim').hidden=true;});
 $('grim').addEventListener('click',e=>{if(e.target.id==='grim')$('grim').hidden=true;});
+function afterSplash(f){if(document.getElementById('splash'))(window.__afterSplashQ=window.__afterSplashQ||[]).push(f);else f();}
+/* The home scroll unrolls from its middle each time it opens */
+function unrollScroll(){const w=$('scrollWrap'),f=$('forgeForm');if(!w||RM)return;w.classList.remove('unroll');w.style.setProperty('--h',f.offsetHeight+'px');void w.offsetWidth;w.classList.add('unroll');}
+/* Music on the home screen. Browsers only allow sound after the first tap or key, so the music starts then
+   (straight away where the app shell allows it) and simply carries on into the game. */
+function syncMusicUI(){const on=AU.musicOn&&!!Bard.timer&&!!AU.ctx&&AU.ctx.state==='running',hm=$('homeMusic');
+  if(hm){hm.setAttribute('aria-pressed',String(on));hm.classList.toggle('on',on);hm.querySelector('span').textContent=on?TRACKS[Bard.ti].name:(AU.musicOn&&!AU.ctx?'Tap for music':AU.musicOn?'Tap for music':'Music off');}
+  const b=$('bMusic');if(b){b.setAttribute('aria-pressed',String(AU.musicOn));b.textContent=AU.musicOn?'Music on':'Music off';}}
+function startMusic(){if(!AU.musicOn)return syncMusicUI();AU.init();if(!AU.ctx)return;Bard.start();
+  if(AU.ctx.state!=='running')AU.ctx.resume().then(syncMusicUI,()=>{});syncMusicUI();}
+{const kick=e=>{if(e&&e.target&&e.target.closest&&e.target.closest('#homeMusic,#bMusic'))return;if(AU.ctx&&AU.ctx.state==='running'&&Bard.timer){off();return;}startMusic();if(AU.ctx&&AU.ctx.state==='running')off();};
+ const off=()=>['pointerup','keydown','touchend'].forEach(t=>removeEventListener(t,kick,true));
+ ['pointerup','keydown','touchend'].forEach(t=>addEventListener(t,kick,true));
+ afterSplash(()=>{try{if(AU.musicOn){AU.init();if(AU.ctx&&AU.ctx.state==='running'){Bard.start();off();}}}catch(e){}syncMusicUI();});}
 function openForge(seed){
   const dr=document.querySelector(`input[name=diff][value=${G.dk||'medium'}]`);if(dr){dr.checked=true;if(typeof showDiffInfo==='function')showDiffInfo();}
-  $('seed').value=seed||randomSeed();$('forge').hidden=false;document.body.classList.add('forging');controls.autoRotate=true;queueLayout();
+  $('seed').value=seed||randomSeed();$('forge').hidden=false;document.body.classList.add('forging');controls.autoRotate=true;queueLayout();afterSplash(unrollScroll);
   const s=loadSave();$('contBox').hidden=!s;
   if(s){const lead=s.players.slice().sort((a,b)=>b.pos-a.pos)[0];$('contInfo').textContent=`${(DIFFS[s.dk]||DIFFS.medium).label} · realm “${s.seed}”, round ${s.round}${s.rounds?` of ${s.rounds}`:''}. ${lead.name} leads on square ${lead.pos}.`;}
 }
 function requestMotion(){try{if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function')DeviceMotionEvent.requestPermission().catch(()=>{});}catch(e){}}
 $('bNew').addEventListener('click',()=>{if(G.busy&&!G.over)return;$('win').hidden=true;openForge();});
 $('difflabel').addEventListener('click',()=>{if(G.busy&&!G.over)return;$('win').hidden=true;openForge(realm&&realm.seed);});
-if(window.matchMedia&&matchMedia('(pointer:coarse)').matches)$('forgeTip').textContent='Same seed, same board. To roll, tap Roll dice, press and wiggle the die, or shake your phone. Games save after every turn.';
+/* Home screen sparkles: a few dozen motes drifting up behind the panel */
+{const box=$('homeSparks');if(box&&!RM){let h='';for(let i=0;i<28;i++){const x=Math.random()*100,d=9+Math.random()*12,dl=-Math.random()*d,sz=2+Math.random()*3,c=['#ffe2a0','#bfe4ff','#ffc1e6','#c8ffd8'][i%4];
+  h+=`<i style="left:${x}%;width:${sz}px;height:${sz}px;background:${c};box-shadow:0 0 ${sz*3}px ${c};animation-duration:${d}s,${2+Math.random()*2}s;animation-delay:${dl}s,${-Math.random()*3}s"></i>`;}box.innerHTML=h;}}
 $('reseed').addEventListener('click',()=>{$('seed').value=randomSeed();});
 $('forgeForm').addEventListener('submit',e=>{e.preventDefault();AU.init();Bard.start();requestMotion();
   const seed=($('seed').value.trim()||randomSeed()).slice(0,40),count=+document.querySelector('input[name=count]:checked').value,mode=document.querySelector('input[name=mode]:checked').value,rounds=+document.querySelector('input[name=rounds]:checked').value;
@@ -2356,7 +2488,7 @@ G.dk='medium';G.diff=DIFFS.medium;setDie('d12');
 function showDiffInfo(){const r=document.querySelector('input[name=diff]:checked');$('diffInfo').textContent=DIFFS[r?r.value:'medium'].blurb.replace(/^[^.]*\.\s*/,'');}
 document.querySelectorAll('input[name=diff]').forEach(r=>r.addEventListener('change',showDiffInfo));showDiffInfo();
 openForge();window.__booted=true;
-{let seen=null;try{seen=localStorage.getItem('hollowmere-howto');}catch(e){}if(!seen){if(document.getElementById('splash'))window.__afterSplash=()=>setTimeout(openHow,250);else setTimeout(openHow,250);}}
+{let seen=null;try{seen=localStorage.getItem('hollowmere-howto');}catch(e){}if(!seen){afterSplash(()=>setTimeout(openHow,1150));}}
 const fontsReady=document.fonts&&document.fonts.load?Promise.race([Promise.all([document.fonts.load('700 38px "Alegreya Sans"'),document.fonts.load('400 42px "IM Fell English SC"')]),wait(2500)]):Promise.resolve();
 window.__sp&&__sp(75);
 fontsReady.catch(()=>{}).then(()=>{repaintDice();realm=generateRealm($('seed').value,'medium');buildRealm();realm.respawnQ=[];$('seedlabel').textContent=realm.seed;
