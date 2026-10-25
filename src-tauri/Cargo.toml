@@ -1,0 +1,19 @@
+[package]
+name = "gnomes-of-hollowmere"
+version = "1.15.0"
+description = "Gnomes of Hollowmere: a 3D fantasy board game"
+authors = ["Adarsha Dan", "Akash Dan"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

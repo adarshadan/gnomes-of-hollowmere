@@ -1,0 +1,8 @@
+{
+  "appId": "io.github.adarshadan.hollowmere",
+  "appName": "Gnomes of Hollowmere",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#0d0915"
+  }
+}

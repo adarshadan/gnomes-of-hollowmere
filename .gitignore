@@ -1,0 +1,9 @@
+node_modules/
+android/
+src-tauri/target/
+src-tauri/gen/
+dist/
+www/index.html
+www/sw.js
+www/manifest.webmanifest
+.DS_Store

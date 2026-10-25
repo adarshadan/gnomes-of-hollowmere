@@ -1,0 +1,19 @@
+{
+  "name": "gnomes-of-hollowmere",
+  "version": "1.15.0",
+  "private": true,
+  "description": "A 3D fantasy board game: race your gnome past monsters to the Summit Hearth.",
+  "scripts": {
+    "build:web": "node tools/build-www.mjs",
+    "android:setup": "bash tools/android-setup.sh",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/core": "^7.6.9"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.9",
+    "@tauri-apps/cli": "^2.12.4"
+  }
+}

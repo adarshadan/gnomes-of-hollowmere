@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Gnomes of Hollowmere",
+  "version": "1.15.0",
+  "identifier": "io.github.adarshadan.hollowmere",
+  "build": {
+    "frontendDist": "../www"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Gnomes of Hollowmere",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 820,
+        "minHeight": 560,
+        "center": true,
+        "resizable": true,
+        "maximized": true,
+        "backgroundColor": "#0d0915"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "publisher": "Adarsha Dan and Akash Dan",
+    "copyright": "Adarsha Dan and Akash Dan",
+    "category": "BoardGame",
+    "shortDescription": "A 3D fantasy board game",
+    "longDescription": "Race your gnome from the Burrow to the Summit Hearth past vine ladders, monster lairs and magic relics.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "nsis": { "installMode": "currentUser" }
+    }
+  }
+}
