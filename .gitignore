@@ -1,5 +1,5 @@
 node_modules/
-android/
+/android/
 src-tauri/target/
 src-tauri/gen/
 dist/
