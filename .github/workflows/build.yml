@@ -119,6 +119,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: files
+          pattern: "{android,windows,standalone}"
           merge-multiple: true
       - name: Name the standalone file
         run: mv files/gnomes-of-hollowmere-standalone.html "files/Gnomes-of-Hollowmere-v${{ needs.web.outputs.version }}-Standalone.html"
